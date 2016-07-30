@@ -406,3 +406,6 @@ code:before {content: "Code: ";display: block;border-bottom: 1px solid;font-size
 .show.effect-sign .dialog-box-container{-webkit-transform: rotateX(0deg);-ms-transform: rotateX(0deg);transform: rotateX(0deg);opacity: 1}
 .dialog-box-content .fa {font-size: 60px;color: #4267b2}
 .dialog-box-content span {display: block;text-align: center;margin-bottom: 8px}
+#ads-midle {float: left;margin-bottom: 20px;display: block;width: 100%;text-align: center;min-height: 90px;border: 1px solid #ccc;padding: 3px 5px;position: relative;background: white;}
+#ads-midle:before,#ads-midle:after {content: "Quảng";background: black;position: absolute;top: 0;bottom: 0;width: 18px;word-wrap: break-word;color: white;line-height: 11px;font-size: 10px;left: 0;padding: 2px 18px 2px 9px;text-align: center;text-transform: uppercase;}
+#ads-midle:after {content: "Cáo";left: 0;top: 58px;}
