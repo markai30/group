@@ -126,9 +126,7 @@ def my_list_categories(cateId, mvid):
         parUrl['ver'] = xbmc_version + '_' + getMac()
         parUrl['ip'] = ipaddress
         json_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?cid=' + str(cateId) + '&mid=' + str(mvid) + '&xxx=' + VIEWXXX + '&' + urlencode(parUrl)
-				xbmcgui.Dialog().ok('CÃ³ lá»—i', json_url)
         data = fetch_data(json_url)
-				
         #xbmc.executebuiltin('Notification(listing, ' + data['msg'] + ', 5000)')
         # if data['tinhtrang']:
         #    if xbmcvfs.exists(SETTINGFILEPATH):
@@ -168,7 +166,7 @@ def my_list_categories(cateId, mvid):
                          'fanart': m['fanart']})
             item.setInfo('video', {'name': m['name'], 'plot': m['plot'], 'mediatype': 'video', 'poster': m['poster']})
             isFolder = True
-            isPlayable = True
+            isPlayable = False
             if m['isPlayable'] == True:
                 isPlayable = 'true'
                 item.setProperty('isPlayable', isPlayable)
@@ -394,7 +392,7 @@ def auto_cfg_silent():
     
     data_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=cfg&' + urlencode(parUrl)
     cfg_text = fetch_data_text(data_url)
-    if 'succse3' in cfg_text:
+    if 'error' in cfg_text:
         # xbmc.executebuiltin('Notification(error, ' + cfg_text + ', 5000)')
         return
     try:
