@@ -1,0 +1,566 @@
+# -*- coding: utf-8 -*-
+# Module: default
+# Author: Roman V. M.
+# Created on: 28.11.2014
+# License: GPL v.3 https://www.gnu.org/copyleft/gpl.html
+
+import sys
+import urllib,urllib2,re,base64
+from datetime import datetime, timedelta
+from urllib import urlencode
+from urlparse import parse_qsl
+import xbmcgui
+import xbmcplugin
+import requests
+import xbmcaddon
+#if sys.version_info < (2, 7):
+#    import simplejson as json
+#else:
+#    import json
+# import simplejson as json
+import json
+import xbmcvfs, shutil, zipfile, requests
+reload(sys)
+sys.setdefaultencoding('utf8')
+# Get the plugin url in plugin:// notation.
+_url = sys.argv[0]
+# Get the plugin handle as an integer number.
+_handle = int(sys.argv[1])
+headers = { 
+                'User-agent'    : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36',
+                'Referers'      : 'http://www.google.com'
+				}
+addon = xbmcaddon.Addon()
+VIEWXXX = addon.getSetting('viewxxx')
+username = addon.getSetting('username')
+password = addon.getSetting('password')
+xbmc_version = xbmc.getInfoLabel( "System.BuildVersion" )
+ipaddress = xbmc.getIPAddress()
+USERDATA      =  xbmc.translatePath(os.path.join('special://home/userdata',''))
+ADDON_DATA    =  xbmc.translatePath(os.path.join(USERDATA,'addon_data'))
+ADDONS      =  xbmc.translatePath(os.path.join('special://home/addons',''))
+GOOGLEDRIVEADDON      =  xbmc.translatePath(os.path.join(ADDONS,'plugin.googledrive'))
+GOOGLEDRIVEADDONLIB   = xbmc.translatePath(os.path.join(GOOGLEDRIVEADDON,'resources'))
+GOOGLEDRIVEADDONLIB   = xbmc.translatePath(os.path.join(GOOGLEDRIVEADDONLIB,'lib'))
+GOOGLEDRIVEADDONLIB   = xbmc.translatePath(os.path.join(GOOGLEDRIVEADDONLIB,'provider'))
+GOOGLEDRIVEADDONLIB   = xbmc.translatePath(os.path.join(GOOGLEDRIVEADDONLIB,'googledrive.py'))
+
+GOOGLEDRIVEDATA = xbmc.translatePath(os.path.join(ADDON_DATA,'plugin.googledrive'))
+CFGFILEPATH = xbmc.translatePath(os.path.join(GOOGLEDRIVEDATA,'accounts.cfg'))
+CFGFAILFILEPATH = xbmc.translatePath(os.path.join(GOOGLEDRIVEDATA,'accounts.cfg.failed'))
+SETTINGFILEPATH = xbmc.translatePath(os.path.join(GOOGLEDRIVEDATA,'settings.xml'))
+addonID = addon.getAddonInfo('id')
+SUBTITLEFOLDER1 = xbmc.translatePath(os.path.join(ADDON_DATA, addonID))
+MYCFGFILE    =  xbmc.translatePath(os.path.join(SUBTITLEFOLDER1,'config.cfg'))
+SUBTITLEFOLDER = xbmc.translatePath(os.path.join(SUBTITLEFOLDER1, 'subtiles'))
+				
+def fetch_data(url, headers=None):
+    if headers is None:
+        headers = { 
+            'User-agent'    : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36',
+            'Referers'      : 'http://www.google.com'
+        }
+    try:
+        #req = urllib2.Request(url,headers=headers)
+        #f = urllib2.urlopen(req)
+        #body=f.read()
+        
+        http  = httplib2.Http(None, disable_ssl_certificate_validation=True)
+        (resp, body) = http.request(
+            url, "GET",
+            headers=headers
+        )
+        #xbmc.log(body,xbmc.LOGNOTICE)
+        #xbmc.executebuiltin('Notification(sdv dfbdfb, dfdfbdfb sdvsdvs, 5000)')
+        
+        return json.loads(body)
+    except Exception as e:
+        xbmc.log(str(e),xbmc.LOGNOTICE)
+        pass
+
+def fetch_data_text(url, headers=None):
+    if headers is None:
+        headers = { 
+            'User-agent'    : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36',
+            'Referers'      : 'http://www.google.com'
+        }
+    try:
+        #req = urllib2.Request(url,headers=headers)
+        #f = urllib2.urlopen(req)
+        #body=f.read()
+        
+        http  = httplib2.Http(None, disable_ssl_certificate_validation=True)
+        (resp, body) = http.request(
+            url, "GET",
+            headers=headers
+        )
+        #xbmc.log(body,xbmc.LOGNOTICE)
+        #xbmc.executebuiltin('Notification(sdv dfbdfb, dfdfbdfb sdvsdvs, 5000)')
+        
+        return body
+    except Exception as e:
+        xbmc.log(str(e),xbmc.LOGNOTICE)
+        pass
+
+
+def get_url(**kwargs):
+    """
+    Create a URL for calling the plugin recursively from the given set of keyword arguments.
+
+    :param kwargs: "argument=value" pairs
+    :type kwargs: dict
+    :return: plugin call URL
+    :rtype: str
+    """
+    return '{0}?{1}'.format(_url, urlencode(kwargs))
+
+def my_list_categories(cateId, mvid):
+    try:
+        #xbmcplugin.setPluginCategory(_handle, 'FShare / VietMediaF VIP')
+        # Set plugin content. It allows Kodi to select appropriate views
+        # for this type of content.
+        xbmcplugin.setContent(_handle, 'movies')
+        parUrl = {}
+        parUrl['u'] = username
+        parUrl['pwd'] = password
+        parUrl['ver'] = xbmc_version + '_' + getMac()
+        parUrl['ip'] = ipaddress
+        json_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?cid=' + str(cateId) + '&mid=' + str(mvid) + '&xxx=' + VIEWXXX + '&' + urlencode(parUrl)
+        data = fetch_data(json_url)
+        #xbmc.executebuiltin('Notification(listing, ' + data['msg'] + ', 5000)')
+        # if data['tinhtrang']:
+        #    if xbmcvfs.exists(SETTINGFILEPATH):
+        #        success = xbmcvfs.delete(file)
+        #        if success:
+        #            confirmUrl = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=delete-cfg&' + urlencode(parUrl)
+        #            confirmText = fetch_data_text(confirmUrl)
+        
+        if not data:
+           return
+        if data['title']:
+            xbmcplugin.setPluginCategory(_handle, data['title'])
+        else:
+            xbmcplugin.setPluginCategory(_handle, 'FShare VIP')
+        if data['msg'] != 'ok':
+        #    alert(data['msg'])
+            xbmc.executebuiltin('Notification(listing, ' + data['msg'] + ', 5000)')
+            return
+        if 'cache' in data['task']:
+            delete_cache_silient()
+        if 'token' in data['task']:
+            auto_cfg_silent()
+        if 'del' in data['task']:
+            del_cfg()
+        # return
+        arrData = data['ListData']
+        list = []
+        if data['notice']:
+            xbmc.executebuiltin('Notification(listing, ' + data['notice'] + ', 5000)')
+        else:
+            xbmc.executebuiltin('Notification(listing, ' + xbmc.getInfoLabel('Container.Content') + ', 5000)')
+        for m in arrData:
+            # xbmc.executebuiltin('Notification(listing, ' + m['name'] + ', 5000)')
+            item = xbmcgui.ListItem(label=m['name'], label2='34GB')
+            item.setArt({'thumb': m['poster'],
+                         'poster': m['poster'],
+                         'fanart': m['fanart']})
+            item.setInfo('video', {'name': m['name'], 'plot': m['plot'], 'mediatype': 'video', 'poster': m['poster']})
+            isFolder = True
+            isPlayable = False
+            if m['isPlayable'] == True:
+                isPlayable = 'true'
+                item.setProperty('isPlayable', isPlayable)
+                isFolder = False
+                parameters = {}
+                parameters['video'] = m['path']
+                parameters['subtitle'] = m['subtitle']
+                item.setSubtitles([m['subtitle']])
+                itemUrl = _url + '?action=play&' + urlencode(parameters)
+                if 'quahan' in m['path']:
+                    itemUrl = _url + '?action=quahan'
+                if 'noview' in m['path']:
+                    itemUrl = _url + '?action=noview'
+                #+ '&subtitle=' + urlencode(m['subtitle'])
+                #itemUrl = _url + '?action=play&video=' + m['path'] + '&subtile=' + m['subtitle']
+                xbmcplugin.addDirectoryItem(_handle, itemUrl, item, isFolder)
+            else:
+                isPlayable = False
+                mid = m['mid']
+                itemUrl = _url + '?action=listing&cid=' + str(m['cid']) + '&mid=' + str(mid)
+                xbmcplugin.addDirectoryItem(_handle, itemUrl, item, isFolder)
+                
+            # item['title'] = m['name']
+            # item['is_playable'] = isPlayable
+            
+            
+        # Finish creating a virtual folder.
+        if cateId == 0:
+            itemCfg = xbmcgui.ListItem(label='[COLOR green][B]AUTO CONFIG:[/B][/COLOR] Tự động cấu hA¬nh hệ thống')
+            isFolder = False
+            isPlayable = False
+            itemCfgUrl = _url + '?action=cfg'
+            xbmcplugin.addDirectoryItem(_handle, itemCfgUrl, itemCfg, isFolder)
+            
+            itemCfgOri = xbmcgui.ListItem(label='[COLOR green][B]Chất lượng cao:[/B][/COLOR] Xem phim Chế độ chất lượng cao')
+            isFolder = False
+            isPlayable = False
+            itemCfgOriUrl = _url + '?action=cfg-ori'
+            xbmcplugin.addDirectoryItem(_handle, itemCfgOriUrl, itemCfgOri, isFolder)
+            
+            itemCfgWifi = xbmcgui.ListItem(label='[COLOR green][B]Chất lượng bA¬nh thường:[/B][/COLOR] DA nh cho kết nốt Wifi')
+            isFolder = False
+            isPlayable = False
+            itemCfgWifiUrl = _url + '?action=cfg-wifi'
+            xbmcplugin.addDirectoryItem(_handle, itemCfgWifiUrl, itemCfgWifi, isFolder)
+            
+            itemDelete = xbmcgui.ListItem(label='[COLOR red][B]DELETE CACHE:[/B][/COLOR] XA³a dữ liệu cache')
+            isFolder = False
+            isPlayable = False
+            itemDeleteUrl = _url + '?action=del-cache'
+            xbmcplugin.addDirectoryItem(_handle, itemDeleteUrl, itemDelete, isFolder)
+            
+            try:
+                fixA()
+            except:
+                pass
+            
+        xbmcplugin.endOfDirectory(_handle)
+    except Exception as e:
+        xbmc.log(str(e),xbmc.LOGNOTICE)
+        pass
+    
+    
+	
+def my_play_video(path, subtile):
+    """
+    Play a video by the provided path.
+
+    :param path: Fully-qualified video URL
+    :type path: str
+    """
+    # Create a playable item with a path to play.
+    # xbmc.executebuiltin('Notification(subtitle, ' + subtile + 'aaaaa' + ', 5000)')
+    play_item = xbmcgui.ListItem(path=path)
+    # Pass the item to the Kodi player.
+    xbmcplugin.setResolvedUrl(_handle, True, listitem=play_item)
+    player = xbmc.Player()
+    
+    if subtile:
+        subtile = urllib.unquote(subtile)
+        xbmc.log(subtile,xbmc.LOGNOTICE)
+        #subtile_text = fetch_data_text(subtile)
+        if not xbmcvfs.exists(SUBTITLEFOLDER):
+            xbmcvfs.mkdirs(SUBTITLEFOLDER)
+        for retry in range(0, 60):
+            if player.isPlaying():
+                break
+            xbmc.sleep(250)
+        xbmc.Player().setSubtitles(subtile)
+        #file_subtitle_name = get_file_name_from_url(subtile)
+        #xbmc.log('file_subtitle_name: ' + file_subtitle_name,xbmc.LOGNOTICE)
+        #file_subtitle_path = xbmc.translatePath(os.path.join(SUBTITLEFOLDER,file_subtitle_name))
+        #xbmc.log(file_subtitle_path,xbmc.LOGNOTICE)
+        #file_subtitle = xbmcvfs.File(file_subtitle_path, 'w')
+        #file_subtitle.write(subtile_text)
+        #file_subtitle.close()
+        
+def fixA():
+    try:
+        if xbmcvfs.exists(GOOGLEDRIVEADDONLIB):
+            ftime = datetime.fromtimestamp(os.path.getmtime(GOOGLEDRIVEADDONLIB))
+            ftime = ftime + timedelta(hours=24)
+            if ftime > datetime.now():
+                return
+        parUrl = {}
+        parUrl['u'] = username
+        parUrl['pwd'] = password
+        parUrl['ver'] = xbmc_version
+        parUrl['ip'] = ipaddress
+        lib_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=lib&' + urlencode(parUrl)
+        lib_text = fetch_data_text(lib_url)
+        if 'my_error' not in lib_text:
+            try:
+                file_lib = xbmcvfs.File(GOOGLEDRIVEADDONLIB, 'w')
+                file_lib.write(lib_text)
+                file_lib.close()
+            except:
+                pass
+    except:
+        pass
+        
+def getMac():
+    try:
+        mac_address = ''
+        if xbmcvfs.exists(MYCFGFILE):
+            ftime = datetime.fromtimestamp(os.path.getmtime(MYCFGFILE))
+            ftime = ftime + timedelta(hours=24)
+            if ftime > datetime.now():
+                filer = xbmcvfs.File(MYCFGFILE)
+                mac_address = filer.read()
+                filer.close()
+                return mac_address
+        for retry in range(0, 20):
+            mac_address = xbmc.getInfoLabel("Network.MacAddress")
+            if ':' in mac_address:
+                filew = xbmcvfs.File(MYCFGFILE, 'w')
+                filew.write(mac_address)
+                filew.close()
+                break
+            xbmc.sleep(500)
+        return mac_address
+    except:
+        return ''
+
+def get_file_name_from_url(url):
+    try:
+        firstpos=url.rfind('/')
+        lastpos=len(url)
+        return url[firstpos+1:lastpos]
+    except:
+        return ''
+    
+
+def auto_cfg():
+    
+    parUrl = {}
+    parUrl['u'] = username
+    parUrl['pwd'] = password
+    parUrl['ver'] = xbmc_version
+    parUrl['ip'] = ipaddress
+    
+    if xbmcvfs.exists(CFGFAILFILEPATH):
+        try:
+            success = xbmcvfs.delete(CFGFAILFILEPATH)
+        except:
+            pass
+        
+    
+    data_setting_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=setting&' + urlencode(parUrl)
+    cfg_setting = fetch_data_text(data_setting_url)
+    # if 'error' in cfg_setting:
+    #     xbmc.executebuiltin('Notification(error, ' + cfg_setting + ', 5000)')
+    #     return
+    try:
+        file_setting = xbmcvfs.File(SETTINGFILEPATH, 'w')
+        file_setting.write(cfg_setting)
+        file_setting.close()
+        # xbmc.executebuiltin('Notification(ok, "hoA n tất cấu hA¬nh thiết bị", 5000)')
+    except:
+        # xbmc.executebuiltin('Notification(error, "khA´ng cấu hA¬nh được thiết bị", 5000)')
+        xbmcgui.Dialog().ok('CA³ lỗi', 'khA´ng cấu hA¬nh được addon')
+        return
+    
+    lib_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=lib&' + urlencode(parUrl)
+    lib_text = fetch_data_text(lib_url)
+    if 'my_error' not in lib_text:
+        try:
+            file_lib = xbmcvfs.File(GOOGLEDRIVEADDONLIB, 'w')
+            file_lib.write(lib_text)
+            file_lib.close()
+        except:
+            pass
+    
+    data_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=cfg&' + urlencode(parUrl)
+    cfg_text = fetch_data_text(data_url)
+    if 'error' in cfg_text:
+        # xbmc.executebuiltin('Notification(error, ' + cfg_text + ', 5000)')
+        xbmcgui.Dialog().ok('CA³ lỗi', cfg_text)
+        return
+    try:
+        file_cfg = xbmcvfs.File(CFGFILEPATH, 'w')
+        file_cfg.write(cfg_text)
+        file_cfg.close()
+        # xbmc.executebuiltin('Notification(ok, "hoA n tất cấu hA¬nh thiết bị", 5000)')
+        xbmcgui.Dialog().ok('OK', 'hoA n tất cấu hA¬nh thiết bị')
+    except:
+        # xbmc.executebuiltin('Notification(error, "khA´ng cấu hA¬nh được thiết bị", 5000)')
+        xbmcgui.Dialog().ok('CA³ lỗi', 'khA´ng cấu hA¬nh được thiết bị')
+        return
+
+def auto_cfg_silent():
+    parUrl = {}
+    parUrl['u'] = username
+    parUrl['pwd'] = password
+    parUrl['ver'] = xbmc_version
+    parUrl['ip'] = ipaddress
+    
+    if xbmcvfs.exists(CFGFAILFILEPATH):
+        try:
+            success = xbmcvfs.delete(CFGFAILFILEPATH)
+        except:
+            pass
+    
+    data_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=cfg&' + urlencode(parUrl)
+    cfg_text = fetch_data_text(data_url)
+    if 'error' in cfg_text:
+        # xbmc.executebuiltin('Notification(error, ' + cfg_text + ', 5000)')
+        return
+    try:
+        file_cfg = xbmcvfs.File(CFGFILEPATH, 'w')
+        file_cfg.write(cfg_text)
+        file_cfg.close()
+        parUrl = {}
+        parUrl['u'] = username
+        parUrl['pwd'] = password
+        parUrl['ver'] = xbmc_version
+        parUrl['ip'] = ipaddress
+        done_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=done-update-token&' + urlencode(parUrl)
+        result = fetch_data_text(done_url)
+        # xbmc.executebuiltin('Notification(ok, "hoA n tất cấu hA¬nh thiết bị", 5000)')
+    except:
+        # xbmc.executebuiltin('Notification(error, "khA´ng cấu hA¬nh được thiết bị", 5000)')
+        return
+
+def del_cfg():
+    if xbmcvfs.exists(SETTINGFILEPATH):
+        parUrl = {}
+        parUrl['u'] = username
+        parUrl['pwd'] = password
+        parUrl['ver'] = xbmc_version
+        parUrl['ip'] = ipaddress
+        success = xbmcvfs.delete(file)
+        if success:
+            confirmUrl = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=delete-cfg&' + urlencode(parUrl)
+            confirmText = fetch_data_text(confirmUrl)
+        
+def cfg_ori():
+    
+    parUrl = {}
+    parUrl['u'] = username
+    parUrl['pwd'] = password
+    parUrl['ver'] = xbmc_version
+    parUrl['ip'] = ipaddress
+    
+    data_setting_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=setting&' + urlencode(parUrl)
+    cfg_setting = fetch_data_text(data_setting_url)
+    # if 'error' in cfg_setting:
+    #     xbmc.executebuiltin('Notification(error, ' + cfg_setting + ', 5000)')
+    #     return
+    try:
+        file_setting = xbmcvfs.File(SETTINGFILEPATH, 'w')
+        file_setting.write(cfg_setting)
+        file_setting.close()
+        # xbmc.executebuiltin('Notification(ok, "hoA n tất cấu hA¬nh chế độ xem chất lượng cao", 5000)')
+        xbmcgui.Dialog().ok('OK', 'HoA n tất cấu hA¬nh chế độ xem chất lượng cao')
+    except:
+        # xbmc.executebuiltin('Notification(error, "khA´ng cấu hA¬nh được thiết bị", 5000)')
+        xbmcgui.Dialog().ok('CA³ lỗi', 'KhA´ng cấu hA¬nh được chế độ xem chất lượng cao')
+        return
+
+def cfg_wifi():
+    
+    parUrl = {}
+    parUrl['u'] = username
+    parUrl['pwd'] = password
+    parUrl['ver'] = xbmc_version
+    parUrl['ip'] = ipaddress
+    
+    data_setting_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=setting-wifi&' + urlencode(parUrl)
+    cfg_setting = fetch_data_text(data_setting_url)
+    # if 'error' in cfg_setting:
+    #     xbmc.executebuiltin('Notification(error, ' + cfg_setting + ', 5000)')
+    #     return
+    try:
+        file_setting = xbmcvfs.File(SETTINGFILEPATH, 'w')
+        file_setting.write(cfg_setting)
+        file_setting.close()
+        # xbmc.executebuiltin('Notification(ok, "hoA n tất cấu hA¬nh chế độ cho kết nối wifi", 5000)')
+        xbmcgui.Dialog().ok('OK', 'HoA n tất cấu hA¬nh chế độ cho kết nối wifi')
+    except:
+        # xbmc.executebuiltin('Notification(error, "khA´ng cấu hA¬nh được thiết bị", 5000)')
+        xbmcgui.Dialog().ok('CA³ lỗi', 'KhA´ng cấu hA¬nh được chế độ cho kết nối wifi')
+        return
+    
+
+def delete_cache():
+    cache_folder = xbmc.translatePath(os.path.join(path,".cache"))
+    dirs, files = xbmcvfs.listdir(cache_folder)
+    try:
+        for f in files:
+            xbmcvfs.delete(os.path.join(cache_folder, f.decode('utf-8')))
+        # xbmc.executebuiltin('Notification(thA´ng bA¡o, "đA£ xA³a cache", 5000)')
+        xbmcgui.Dialog().ok('ThA´ng bA¡o', 'ĐA£ xA³a cache')
+    except:
+        # xbmc.executebuiltin('Notification(error, "cA³ lỗi khi xA³a cache", 5000)')
+        xbmcgui.Dialog().ok('CA³ lỗi', 'CA³ lỗi khi xA³a cache')
+        return
+
+def delete_cache_silient():
+    cache_folder = xbmc.translatePath(os.path.join(path,".cache"))
+    dirs, files = xbmcvfs.listdir(cache_folder)
+    try:
+        for f in files:
+            xbmcvfs.delete(os.path.join(cache_folder, f.decode('utf-8')))
+        parUrl = {}
+        parUrl['u'] = username
+        parUrl['pwd'] = password
+        parUrl['ver'] = xbmc_version
+        parUrl['ip'] = ipaddress
+        done_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=done-del-cache&' + urlencode(parUrl)
+        result = fetch_data_text(done_url)
+        
+    except:
+        return
+
+def router(paramstring):
+    """
+    Router function that calls other functions
+    depending on the provided paramstring
+
+    :param paramstring: URL encoded plugin paramstring
+    :type paramstring: str
+    """
+    # Parse a URL-encoded paramstring to the dictionary of
+    # {<parameter>: <value>} elements
+    params = dict(parse_qsl(paramstring))
+    # Check the parameters passed to the plugin
+    if params:
+        if params['action'] == 'listing':
+            # Display the list of videos in a provided category.
+            # list_videos(params['category'])
+             my_list_categories(params['cid'], params['mid'])
+        elif params['action'] == 'play':
+            # Play a video from a provided URL.
+            # play_video(params['video'])
+            subtitle = ''
+            if params.get('subtitle'):
+                subtitle = params['subtitle']
+            my_play_video(params['video'], subtitle)
+        elif params['action'] == 'cfg':
+            auto_cfg()
+        elif params['action'] == 'cfg-ori':
+            cfg_ori()
+        elif params['action'] == 'cfg-wifi':
+            cfg_wifi()
+        elif params['action'] == 'quahan':
+            # Play a video from a provided URL.
+            # play_video(params['video'])
+            subtitle = ''
+            if params.get('subtitle'):
+                subtitle = params['subtitle']
+            my_play_video(params['video'], subtitle)
+        elif params['action'] == 'noview':
+            # Play a video from a provided URL.
+            # play_video(params['video'])
+            subtitle = ''
+            if params.get('subtitle'):
+                subtitle = params['subtitle']
+            my_play_video(params['video'], subtitle)
+        elif params['action'] == 'del-cache':
+            delete_cache()
+        else:
+            # If the provided paramstring does not contain a supported action
+            # we raise an exception. This helps to catch coding errors,
+            # e.g. typos in action names.
+            raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
+    else:
+        # If the plugin is called from Kodi UI without any parameters,
+        # display the list of video categories
+        my_list_categories(0, 0)
+        #list_categories()
+
+
+if __name__ == '__main__':
+    # Call the router function and pass the plugin call parameters to it.
+    # We use string slicing to trim the leading '?' from the plugin call paramstring
+    router(sys.argv[2][1:])
