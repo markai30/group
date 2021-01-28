@@ -176,10 +176,7 @@ def my_list_categories(cateId, mvid):
                 parameters['subtitle'] = m['subtitle']
                 item.setSubtitles([m['subtitle']])
                 itemUrl = _url + '?action=play&' + urlencode(parameters)
-                if 'quahan' in m['path']:
-                    itemUrl = _url + '?action=quahan'
-                if 'noview' in m['path']:
-                    itemUrl = _url + '?action=noview'
+								xbmc.executebuiltin('Notification(listing, ' + itemUrl + ', 5000)')
                 #+ '&subtitle=' + urlencode(m['subtitle'])
                 #itemUrl = _url + '?action=play&video=' + m['path'] + '&subtile=' + m['subtitle']
                 xbmcplugin.addDirectoryItem(_handle, itemUrl, item, isFolder)
