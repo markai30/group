@@ -534,9 +534,9 @@ def router(paramstring):
             cfg_wifi()
         elif params['action'] == 'quahan':
 				
-            #xbmcgui.Dialog().ok('Error', 'TA i khoáº£n cá»§a báº¡n bá»‹ quA¡ háº¡n!!!\nLiAªn há»‡ zalo 0357 384 256 Ä‘á»ƒ Ä‘Æ°á»£c há»— trá»£!!!')
+            # xbmcgui.Dialog().ok('Error', 'TA i khoáº£n cá»§a báº¡n bá»‹ quA¡ háº¡n!!!\nLiAªn há»‡ zalo 0357 384 256 Ä‘á»ƒ Ä‘Æ°á»£c há»— trá»£!!!')
         elif params['action'] == 'noview':
-            #xbmcgui.Dialog().ok('Error', 'Báº¡n khA´ng cA³ quyá»n xem phim nA y!!!\nLiAªn há»‡ zalo 0357 384 256 Ä‘á»ƒ Ä‘Æ°á»£c há»— trá»£!!!')
+            # xbmcgui.Dialog().ok('Error', 'Báº¡n khA´ng cA³ quyá»n xem phim nA y!!!\nLiAªn há»‡ zalo 0357 384 256 Ä‘á»ƒ Ä‘Æ°á»£c há»— trá»£!!!')
         elif params['action'] == 'del-cache':
             delete_cache()
         else:
