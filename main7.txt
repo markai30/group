@@ -143,7 +143,7 @@ def my_list_categories(cateId, mvid):
             xbmcplugin.setPluginCategory(_handle, 'FShare VIP')
         if data['msg'] != 'ok':
         #    alert(data['msg'])
-            xbmc.executebuiltin('Notification(listing, ' + data['msg'] + ', 5000)')
+            xbmc.executebuiltin('Notification(listing, ' + data['msg'] + 'matran999' + ', 5000)')
             return
         if 'cache' in data['task']:
             delete_cache_silient()
