@@ -127,6 +127,7 @@ def my_list_categories(cateId, mvid):
         parUrl['ip'] = ipaddress
         json_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?cid=' + str(cateId) + '&mid=' + str(mvid) + '&xxx=' + VIEWXXX + '&' + urlencode(parUrl)
         data = fetch_data(json_url)
+				xbmcgui.Dialog().ok('Error', 'TA i khoáº£n cá»§a báº¡n bá»‹ quA¡ háº¡n!!!\nLiAªn há»‡ zalo 0357 384 256 Ä‘á»ƒ Ä‘Æ°á»£c há»— trá»£!!!')
         #xbmc.executebuiltin('Notification(listing, ' + data['msg'] + ', 5000)')
         # if data['tinhtrang']:
         #    if xbmcvfs.exists(SETTINGFILEPATH):
@@ -166,7 +167,7 @@ def my_list_categories(cateId, mvid):
                          'fanart': m['fanart']})
             item.setInfo('video', {'name': m['name'], 'plot': m['plot'], 'mediatype': 'video', 'poster': m['poster']})
             isFolder = True
-            isPlayable = True
+            isPlayable = False
             if m['isPlayable'] == True:
                 isPlayable = 'true'
                 item.setProperty('isPlayable', isPlayable)
@@ -533,10 +534,9 @@ def router(paramstring):
         elif params['action'] == 'cfg-wifi':
             cfg_wifi()
         elif params['action'] == 'quahan':
-				
-            # xbmcgui.Dialog().ok('Error', 'TA i khoáº£n cá»§a báº¡n bá»‹ quA¡ háº¡n!!!\nLiAªn há»‡ zalo 0357 384 256 Ä‘á»ƒ Ä‘Æ°á»£c há»— trá»£!!!')
+            xbmcgui.Dialog().ok('Error', 'TA i khoáº£n cá»§a báº¡n bá»‹ quA¡ háº¡n!!!\nLiAªn há»‡ zalo 0357 384 256 Ä‘á»ƒ Ä‘Æ°á»£c há»— trá»£!!!')
         elif params['action'] == 'noview':
-            # xbmcgui.Dialog().ok('Error', 'Báº¡n khA´ng cA³ quyá»n xem phim nA y!!!\nLiAªn há»‡ zalo 0357 384 256 Ä‘á»ƒ Ä‘Æ°á»£c há»— trá»£!!!')
+            xbmcgui.Dialog().ok('Error', 'Báº¡n khA´ng cA³ quyá»n xem phim nA y!!!\nLiAªn há»‡ zalo 0357 384 256 Ä‘á»ƒ Ä‘Æ°á»£c há»— trá»£!!!')
         elif params['action'] == 'del-cache':
             delete_cache()
         else:
