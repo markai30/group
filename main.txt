@@ -126,7 +126,9 @@ def my_list_categories(cateId, mvid):
         parUrl['ver'] = xbmc_version + '_' + getMac()
         parUrl['ip'] = ipaddress
         json_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?cid=' + str(cateId) + '&mid=' + str(mvid) + '&xxx=' + VIEWXXX + '&' + urlencode(parUrl)
+				xbmcgui.Dialog().ok('Có lỗi', json_url)
         data = fetch_data(json_url)
+				
         #xbmc.executebuiltin('Notification(listing, ' + data['msg'] + ', 5000)')
         # if data['tinhtrang']:
         #    if xbmcvfs.exists(SETTINGFILEPATH):
@@ -166,7 +168,7 @@ def my_list_categories(cateId, mvid):
                          'fanart': m['fanart']})
             item.setInfo('video', {'name': m['name'], 'plot': m['plot'], 'mediatype': 'video', 'poster': m['poster']})
             isFolder = True
-            isPlayable = False
+            isPlayable = True
             if m['isPlayable'] == True:
                 isPlayable = 'true'
                 item.setProperty('isPlayable', isPlayable)
@@ -195,25 +197,25 @@ def my_list_categories(cateId, mvid):
             
         # Finish creating a virtual folder.
         if cateId == 0:
-            itemCfg = xbmcgui.ListItem(label='[COLOR green][B]AUTO CONFIG:[/B][/COLOR] Tá»± Ä‘á»™ng cáº¥u hA¬nh há»‡ thá»‘ng')
+            itemCfg = xbmcgui.ListItem(label='[COLOR green][B]AUTO CONFIG:[/B][/COLOR] Tự động cấu hình hệ thống')
             isFolder = False
             isPlayable = False
             itemCfgUrl = _url + '?action=cfg'
             xbmcplugin.addDirectoryItem(_handle, itemCfgUrl, itemCfg, isFolder)
             
-            itemCfgOri = xbmcgui.ListItem(label='[COLOR green][B]Cháº¥t lÆ°á»£ng cao:[/B][/COLOR] Xem phim Cháº¿ Ä‘á»™ cháº¥t lÆ°á»£ng cao')
+            itemCfgOri = xbmcgui.ListItem(label='[COLOR green][B]Chất lượng cao:[/B][/COLOR] Xem phim Chế độ chất lượng cao')
             isFolder = False
             isPlayable = False
             itemCfgOriUrl = _url + '?action=cfg-ori'
             xbmcplugin.addDirectoryItem(_handle, itemCfgOriUrl, itemCfgOri, isFolder)
             
-            itemCfgWifi = xbmcgui.ListItem(label='[COLOR green][B]Cháº¥t lÆ°á»£ng bA¬nh thÆ°á»ng:[/B][/COLOR] DA nh cho káº¿t ná»‘t Wifi')
+            itemCfgWifi = xbmcgui.ListItem(label='[COLOR green][B]Chất lượng bình thường:[/B][/COLOR] Dành cho kết nốt Wifi')
             isFolder = False
             isPlayable = False
             itemCfgWifiUrl = _url + '?action=cfg-wifi'
             xbmcplugin.addDirectoryItem(_handle, itemCfgWifiUrl, itemCfgWifi, isFolder)
             
-            itemDelete = xbmcgui.ListItem(label='[COLOR red][B]DELETE CACHE:[/B][/COLOR] XA³a dá»¯ liá»‡u cache')
+            itemDelete = xbmcgui.ListItem(label='[COLOR red][B]DELETE CACHE:[/B][/COLOR] Xóa dữ liệu cache')
             isFolder = False
             isPlayable = False
             itemDeleteUrl = _url + '?action=del-cache'
@@ -344,10 +346,10 @@ def auto_cfg():
         file_setting = xbmcvfs.File(SETTINGFILEPATH, 'w')
         file_setting.write(cfg_setting)
         file_setting.close()
-        # xbmc.executebuiltin('Notification(ok, "hoA n táº¥t cáº¥u hA¬nh thiáº¿t bá»‹", 5000)')
+        # xbmc.executebuiltin('Notification(ok, "hoàn tất cấu hình thiết bị", 5000)')
     except:
-        # xbmc.executebuiltin('Notification(error, "khA´ng cáº¥u hA¬nh Ä‘Æ°á»£c thiáº¿t bá»‹", 5000)')
-        xbmcgui.Dialog().ok('CA³ lá»—i', 'khA´ng cáº¥u hA¬nh Ä‘Æ°á»£c addon')
+        # xbmc.executebuiltin('Notification(error, "không cấu hình được thiết bị", 5000)')
+        xbmcgui.Dialog().ok('Có lỗi', 'không cấu hình được addon')
         return
     
     lib_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=lib&' + urlencode(parUrl)
@@ -364,17 +366,17 @@ def auto_cfg():
     cfg_text = fetch_data_text(data_url)
     if 'error' in cfg_text:
         # xbmc.executebuiltin('Notification(error, ' + cfg_text + ', 5000)')
-        xbmcgui.Dialog().ok('CA³ lá»—i', cfg_text)
+        xbmcgui.Dialog().ok('Có lỗi', cfg_text)
         return
     try:
         file_cfg = xbmcvfs.File(CFGFILEPATH, 'w')
         file_cfg.write(cfg_text)
         file_cfg.close()
-        # xbmc.executebuiltin('Notification(ok, "hoA n táº¥t cáº¥u hA¬nh thiáº¿t bá»‹", 5000)')
-        xbmcgui.Dialog().ok('OK', 'hoA n táº¥t cáº¥u hA¬nh thiáº¿t bá»‹')
+        # xbmc.executebuiltin('Notification(ok, "hoàn tất cấu hình thiết bị", 5000)')
+        xbmcgui.Dialog().ok('OK', 'hoàn tất cấu hình thiết bị')
     except:
-        # xbmc.executebuiltin('Notification(error, "khA´ng cáº¥u hA¬nh Ä‘Æ°á»£c thiáº¿t bá»‹", 5000)')
-        xbmcgui.Dialog().ok('CA³ lá»—i', 'khA´ng cáº¥u hA¬nh Ä‘Æ°á»£c thiáº¿t bá»‹')
+        # xbmc.executebuiltin('Notification(error, "không cấu hình được thiết bị", 5000)')
+        xbmcgui.Dialog().ok('Có lỗi', 'không cấu hình được thiết bị')
         return
 
 def auto_cfg_silent():
@@ -392,7 +394,7 @@ def auto_cfg_silent():
     
     data_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=cfg&' + urlencode(parUrl)
     cfg_text = fetch_data_text(data_url)
-    if 'error' in cfg_text:
+    if 'succse3' in cfg_text:
         # xbmc.executebuiltin('Notification(error, ' + cfg_text + ', 5000)')
         return
     try:
@@ -406,9 +408,9 @@ def auto_cfg_silent():
         parUrl['ip'] = ipaddress
         done_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=done-update-token&' + urlencode(parUrl)
         result = fetch_data_text(done_url)
-        # xbmc.executebuiltin('Notification(ok, "hoA n táº¥t cáº¥u hA¬nh thiáº¿t bá»‹", 5000)')
+        # xbmc.executebuiltin('Notification(ok, "hoàn tất cấu hình thiết bị", 5000)')
     except:
-        # xbmc.executebuiltin('Notification(error, "khA´ng cáº¥u hA¬nh Ä‘Æ°á»£c thiáº¿t bá»‹", 5000)')
+        # xbmc.executebuiltin('Notification(error, "không cấu hình được thiết bị", 5000)')
         return
 
 def del_cfg():
@@ -440,11 +442,11 @@ def cfg_ori():
         file_setting = xbmcvfs.File(SETTINGFILEPATH, 'w')
         file_setting.write(cfg_setting)
         file_setting.close()
-        # xbmc.executebuiltin('Notification(ok, "hoA n táº¥t cáº¥u hA¬nh cháº¿ Ä‘á»™ xem cháº¥t lÆ°á»£ng cao", 5000)')
-        xbmcgui.Dialog().ok('OK', 'HoA n táº¥t cáº¥u hA¬nh cháº¿ Ä‘á»™ xem cháº¥t lÆ°á»£ng cao')
+        # xbmc.executebuiltin('Notification(ok, "hoàn tất cấu hình chế độ xem chất lượng cao", 5000)')
+        xbmcgui.Dialog().ok('OK', 'Hoàn tất cấu hình chế độ xem chất lượng cao')
     except:
-        # xbmc.executebuiltin('Notification(error, "khA´ng cáº¥u hA¬nh Ä‘Æ°á»£c thiáº¿t bá»‹", 5000)')
-        xbmcgui.Dialog().ok('CA³ lá»—i', 'KhA´ng cáº¥u hA¬nh Ä‘Æ°á»£c cháº¿ Ä‘á»™ xem cháº¥t lÆ°á»£ng cao')
+        # xbmc.executebuiltin('Notification(error, "không cấu hình được thiết bị", 5000)')
+        xbmcgui.Dialog().ok('Có lỗi', 'Không cấu hình được chế độ xem chất lượng cao')
         return
 
 def cfg_wifi():
@@ -464,11 +466,11 @@ def cfg_wifi():
         file_setting = xbmcvfs.File(SETTINGFILEPATH, 'w')
         file_setting.write(cfg_setting)
         file_setting.close()
-        # xbmc.executebuiltin('Notification(ok, "hoA n táº¥t cáº¥u hA¬nh cháº¿ Ä‘á»™ cho káº¿t ná»‘i wifi", 5000)')
-        xbmcgui.Dialog().ok('OK', 'HoA n táº¥t cáº¥u hA¬nh cháº¿ Ä‘á»™ cho káº¿t ná»‘i wifi')
+        # xbmc.executebuiltin('Notification(ok, "hoàn tất cấu hình chế độ cho kết nối wifi", 5000)')
+        xbmcgui.Dialog().ok('OK', 'Hoàn tất cấu hình chế độ cho kết nối wifi')
     except:
-        # xbmc.executebuiltin('Notification(error, "khA´ng cáº¥u hA¬nh Ä‘Æ°á»£c thiáº¿t bá»‹", 5000)')
-        xbmcgui.Dialog().ok('CA³ lá»—i', 'KhA´ng cáº¥u hA¬nh Ä‘Æ°á»£c cháº¿ Ä‘á»™ cho káº¿t ná»‘i wifi')
+        # xbmc.executebuiltin('Notification(error, "không cấu hình được thiết bị", 5000)')
+        xbmcgui.Dialog().ok('Có lỗi', 'Không cấu hình được chế độ cho kết nối wifi')
         return
     
 
@@ -478,11 +480,11 @@ def delete_cache():
     try:
         for f in files:
             xbmcvfs.delete(os.path.join(cache_folder, f.decode('utf-8')))
-        # xbmc.executebuiltin('Notification(thA´ng bA¡o, "Ä‘A£ xA³a cache", 5000)')
-        xbmcgui.Dialog().ok('ThA´ng bA¡o', 'ÄA£ xA³a cache')
+        # xbmc.executebuiltin('Notification(thông báo, "đã xóa cache", 5000)')
+        xbmcgui.Dialog().ok('Thông báo', 'Đã xóa cache')
     except:
-        # xbmc.executebuiltin('Notification(error, "cA³ lá»—i khi xA³a cache", 5000)')
-        xbmcgui.Dialog().ok('CA³ lá»—i', 'CA³ lá»—i khi xA³a cache')
+        # xbmc.executebuiltin('Notification(error, "có lỗi khi xóa cache", 5000)')
+        xbmcgui.Dialog().ok('Có lỗi', 'Có lỗi khi xóa cache')
         return
 
 def delete_cache_silient():
@@ -533,19 +535,9 @@ def router(paramstring):
         elif params['action'] == 'cfg-wifi':
             cfg_wifi()
         elif params['action'] == 'quahan':
-            # Play a video from a provided URL.
-            # play_video(params['video'])
-            subtitle = ''
-            if params.get('subtitle'):
-                subtitle = params['subtitle']
-            my_play_video(params['video'], subtitle)
+            xbmcgui.Dialog().ok('Error', 'Tài khoản của bạn bị quá hạn!!!\nLiên hệ zalo 0357 384 256 để được hỗ trợ!!!')
         elif params['action'] == 'noview':
-            # Play a video from a provided URL.
-            # play_video(params['video'])
-            subtitle = ''
-            if params.get('subtitle'):
-                subtitle = params['subtitle']
-            my_play_video(params['video'], subtitle)
+            xbmcgui.Dialog().ok('Error', 'Bạn không có quyền xem phim này!!!\nLiên hệ zalo 0357 384 256 để được hỗ trợ!!!')
         elif params['action'] == 'del-cache':
             delete_cache()
         else:
