@@ -195,25 +195,25 @@ def my_list_categories(cateId, mvid):
             
         # Finish creating a virtual folder.
         if cateId == 0:
-            itemCfg = xbmcgui.ListItem(label='[COLOR green][B]AUTO CONFIG:[/B][/COLOR] Tu dong cau hinh he thong')
+            itemCfg = xbmcgui.ListItem(label='[COLOR green][B]AUTO CONFIG:[/B][/COLOR] Tá»± Ä‘á»™ng cáº¥u hĂ¬nh há»‡ thá»‘ng')
             isFolder = False
             isPlayable = False
             itemCfgUrl = _url + '?action=cfg'
             xbmcplugin.addDirectoryItem(_handle, itemCfgUrl, itemCfg, isFolder)
             
-            itemCfgOri = xbmcgui.ListItem(label='[COLOR green][B]Chat luong cao:[/B][/COLOR] Xem phim Che do chat luong cao')
+            itemCfgOri = xbmcgui.ListItem(label='[COLOR green][B]Cháº¥t lÆ°á»£ng cao:[/B][/COLOR] Xem phim Cháº¿ Ä‘á»™ cháº¥t lÆ°á»£ng cao')
             isFolder = False
             isPlayable = False
             itemCfgOriUrl = _url + '?action=cfg-ori'
             xbmcplugin.addDirectoryItem(_handle, itemCfgOriUrl, itemCfgOri, isFolder)
             
-            itemCfgWifi = xbmcgui.ListItem(label='[COLOR green][B]Chat luong binh thuong:[/B][/COLOR] Danh cho ket not Wifi')
+            itemCfgWifi = xbmcgui.ListItem(label='[COLOR green][B]Cháº¥t lÆ°á»£ng bĂ¬nh thÆ°á»ng:[/B][/COLOR] DĂ nh cho káº¿t ná»‘t Wifi')
             isFolder = False
             isPlayable = False
             itemCfgWifiUrl = _url + '?action=cfg-wifi'
             xbmcplugin.addDirectoryItem(_handle, itemCfgWifiUrl, itemCfgWifi, isFolder)
             
-            itemDelete = xbmcgui.ListItem(label='[COLOR red][B]DELETE CACHE:[/B][/COLOR] Xoa du lieu cache')
+            itemDelete = xbmcgui.ListItem(label='[COLOR red][B]DELETE CACHE:[/B][/COLOR] XĂ³a dá»¯ liá»‡u cache')
             isFolder = False
             isPlayable = False
             itemDeleteUrl = _url + '?action=del-cache'
@@ -344,10 +344,10 @@ def auto_cfg():
         file_setting = xbmcvfs.File(SETTINGFILEPATH, 'w')
         file_setting.write(cfg_setting)
         file_setting.close()
-        # xbmc.executebuiltin('Notification(ok, "hoan tat cau hinh thiet bi", 5000)')
+        # xbmc.executebuiltin('Notification(ok, "hoĂ n táº¥t cáº¥u hĂ¬nh thiáº¿t bá»‹", 5000)')
     except:
-        # xbmc.executebuiltin('Notification(error, "khong cau hinh duoc thiet bi", 5000)')
-        xbmcgui.Dialog().ok('Co loi', 'khong cau hinh duoc addon')
+        # xbmc.executebuiltin('Notification(error, "khĂ´ng cáº¥u hĂ¬nh Ä‘Æ°á»£c thiáº¿t bá»‹", 5000)')
+        xbmcgui.Dialog().ok('CĂ³ lá»—i', 'khĂ´ng cáº¥u hĂ¬nh Ä‘Æ°á»£c addon')
         return
     
     lib_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=lib&' + urlencode(parUrl)
@@ -364,17 +364,17 @@ def auto_cfg():
     cfg_text = fetch_data_text(data_url)
     if 'error' in cfg_text:
         # xbmc.executebuiltin('Notification(error, ' + cfg_text + ', 5000)')
-        xbmcgui.Dialog().ok('Co loi', cfg_text)
+        xbmcgui.Dialog().ok('CĂ³ lá»—i', cfg_text)
         return
     try:
         file_cfg = xbmcvfs.File(CFGFILEPATH, 'w')
         file_cfg.write(cfg_text)
         file_cfg.close()
-        # xbmc.executebuiltin('Notification(ok, "hoan tat cau hinh thiet bi", 5000)')
-        xbmcgui.Dialog().ok('OK', 'hoan tat cau hinh thiet bi')
+        # xbmc.executebuiltin('Notification(ok, "hoĂ n táº¥t cáº¥u hĂ¬nh thiáº¿t bá»‹", 5000)')
+        xbmcgui.Dialog().ok('OK', 'hoĂ n táº¥t cáº¥u hĂ¬nh thiáº¿t bá»‹')
     except:
-        # xbmc.executebuiltin('Notification(error, "khong cau hinh duoc thiet bi", 5000)')
-        xbmcgui.Dialog().ok('Co loi', 'khong cau hinh duoc thiet bi')
+        # xbmc.executebuiltin('Notification(error, "khĂ´ng cáº¥u hĂ¬nh Ä‘Æ°á»£c thiáº¿t bá»‹", 5000)')
+        xbmcgui.Dialog().ok('CĂ³ lá»—i', 'khĂ´ng cáº¥u hĂ¬nh Ä‘Æ°á»£c thiáº¿t bá»‹')
         return
 
 def auto_cfg_silent():
@@ -406,9 +406,9 @@ def auto_cfg_silent():
         parUrl['ip'] = ipaddress
         done_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?act=done-update-token&' + urlencode(parUrl)
         result = fetch_data_text(done_url)
-        # xbmc.executebuiltin('Notification(ok, "hoan tat cau hinh thiet bi", 5000)')
+        # xbmc.executebuiltin('Notification(ok, "hoĂ n táº¥t cáº¥u hĂ¬nh thiáº¿t bá»‹", 5000)')
     except:
-        # xbmc.executebuiltin('Notification(error, "khong cau hinh duoc thiet bi", 5000)')
+        # xbmc.executebuiltin('Notification(error, "khĂ´ng cáº¥u hĂ¬nh Ä‘Æ°á»£c thiáº¿t bá»‹", 5000)')
         return
 
 def del_cfg():
@@ -440,11 +440,11 @@ def cfg_ori():
         file_setting = xbmcvfs.File(SETTINGFILEPATH, 'w')
         file_setting.write(cfg_setting)
         file_setting.close()
-        # xbmc.executebuiltin('Notification(ok, "hoan tat cau hinh che do xem chat luong cao", 5000)')
-        xbmcgui.Dialog().ok('OK', 'Hoan tat cau hinh che do xem chat luong cao')
+        # xbmc.executebuiltin('Notification(ok, "hoĂ n táº¥t cáº¥u hĂ¬nh cháº¿ Ä‘á»™ xem cháº¥t lÆ°á»£ng cao", 5000)')
+        xbmcgui.Dialog().ok('OK', 'HoĂ n táº¥t cáº¥u hĂ¬nh cháº¿ Ä‘á»™ xem cháº¥t lÆ°á»£ng cao')
     except:
-        # xbmc.executebuiltin('Notification(error, "khong cau hinh duoc thiet bi", 5000)')
-        xbmcgui.Dialog().ok('Co loi', 'Khong cau hinh duoc che do xem chat luong cao')
+        # xbmc.executebuiltin('Notification(error, "khĂ´ng cáº¥u hĂ¬nh Ä‘Æ°á»£c thiáº¿t bá»‹", 5000)')
+        xbmcgui.Dialog().ok('CĂ³ lá»—i', 'KhĂ´ng cáº¥u hĂ¬nh Ä‘Æ°á»£c cháº¿ Ä‘á»™ xem cháº¥t lÆ°á»£ng cao')
         return
 
 def cfg_wifi():
@@ -464,11 +464,11 @@ def cfg_wifi():
         file_setting = xbmcvfs.File(SETTINGFILEPATH, 'w')
         file_setting.write(cfg_setting)
         file_setting.close()
-        # xbmc.executebuiltin('Notification(ok, "hoan tat cau hinh che do cho ket noi wifi", 5000)')
-        xbmcgui.Dialog().ok('OK', 'Hoan tat cau hinh che do cho ket noi wifi')
+        # xbmc.executebuiltin('Notification(ok, "hoĂ n táº¥t cáº¥u hĂ¬nh cháº¿ Ä‘á»™ cho káº¿t ná»‘i wifi", 5000)')
+        xbmcgui.Dialog().ok('OK', 'HoĂ n táº¥t cáº¥u hĂ¬nh cháº¿ Ä‘á»™ cho káº¿t ná»‘i wifi')
     except:
-        # xbmc.executebuiltin('Notification(error, "khong cau hinh duoc thiet bi", 5000)')
-        xbmcgui.Dialog().ok('Co loi', 'Khong cau hinh duoc che do cho ket noi wifi')
+        # xbmc.executebuiltin('Notification(error, "khĂ´ng cáº¥u hĂ¬nh Ä‘Æ°á»£c thiáº¿t bá»‹", 5000)')
+        xbmcgui.Dialog().ok('CĂ³ lá»—i', 'KhĂ´ng cáº¥u hĂ¬nh Ä‘Æ°á»£c cháº¿ Ä‘á»™ cho káº¿t ná»‘i wifi')
         return
     
 
@@ -478,11 +478,11 @@ def delete_cache():
     try:
         for f in files:
             xbmcvfs.delete(os.path.join(cache_folder, f.decode('utf-8')))
-        # xbmc.executebuiltin('Notification(thong bao, "da xoa cache", 5000)')
-        xbmcgui.Dialog().ok('Thong bao', 'Da xoa cache')
+        # xbmc.executebuiltin('Notification(thĂ´ng bĂ¡o, "Ä‘Ă£ xĂ³a cache", 5000)')
+        xbmcgui.Dialog().ok('ThĂ´ng bĂ¡o', 'ÄĂ£ xĂ³a cache')
     except:
-        # xbmc.executebuiltin('Notification(error, "co loi khi xoa cache", 5000)')
-        xbmcgui.Dialog().ok('Co loi', 'Co loi khi xoa cache')
+        # xbmc.executebuiltin('Notification(error, "cĂ³ lá»—i khi xĂ³a cache", 5000)')
+        xbmcgui.Dialog().ok('CĂ³ lá»—i', 'CĂ³ lá»—i khi xĂ³a cache')
         return
 
 def delete_cache_silient():
@@ -533,9 +533,9 @@ def router(paramstring):
         elif params['action'] == 'cfg-wifi':
             cfg_wifi()
         elif params['action'] == 'quahan':
-            xbmcgui.Dialog().ok('Error', 'Tai khoan cua ban bi qua han!!!\nLien he zalo 0357 384 256 de duoc ho tro!!!')
+            xbmcgui.Dialog().ok('Error', 'TĂ i khoáº£n cá»§a báº¡n bá»‹ quĂ¡ háº¡n!!!\nLiĂªn há»‡ zalo 0357 384 256 Ä‘á»ƒ Ä‘Æ°á»£c há»— trá»£!!!')
         elif params['action'] == 'noview':
-            xbmcgui.Dialog().ok('Error', 'Ban khong co quyen xem phim nay!!!\nLien he zalo 0357 384 256 de duoc ho tro!!!')
+            xbmcgui.Dialog().ok('Error', 'Báº¡n khĂ´ng cĂ³ quyá»n xem phim nĂ y!!!\nLiĂªn há»‡ zalo 0357 384 256 Ä‘á»ƒ Ä‘Æ°á»£c há»— trá»£!!!')
         elif params['action'] == 'del-cache':
             delete_cache()
         else:
