@@ -127,7 +127,6 @@ def my_list_categories(cateId, mvid):
         parUrl['ip'] = ipaddress
         json_url = 'https://mediaf.me/style/video/api/LoadMovies.aspx?cid=' + str(cateId) + '&mid=' + str(mvid) + '&xxx=' + VIEWXXX + '&' + urlencode(parUrl)
         data = fetch_data(json_url)
-				xbmcgui.Dialog().ok('Error', 'TA i khoáº£n cá»§a báº¡n bá»‹ quA¡ háº¡n!!!\nLiAªn há»‡ zalo 0357 384 256 Ä‘á»ƒ Ä‘Æ°á»£c há»— trá»£!!!')
         #xbmc.executebuiltin('Notification(listing, ' + data['msg'] + ', 5000)')
         # if data['tinhtrang']:
         #    if xbmcvfs.exists(SETTINGFILEPATH):
