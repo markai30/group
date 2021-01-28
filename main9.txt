@@ -143,7 +143,7 @@ def my_list_categories(cateId, mvid):
             xbmcplugin.setPluginCategory(_handle, 'FShare VIP')
         if data['msg'] != 'ok':
         #    alert(data['msg'])
-            xbmc.executebuiltin('Notification(listing, ' + data['msg'] + 'matran999' + ', 5000)')
+            xbmc.executebuiltin('Notification(listing, ' + data['msg'] + ', 5000)')
             return
         if 'cache' in data['task']:
             delete_cache_silient()
@@ -176,10 +176,14 @@ def my_list_categories(cateId, mvid):
                 parameters['subtitle'] = m['subtitle']
                 item.setSubtitles([m['subtitle']])
                 itemUrl = _url + '?action=play&' + urlencode(parameters)
-								xbmc.executebuiltin('Notification(listing, ' + itemUrl + ', 5000)')
+                if 'quahan' in m['path']:
+                    itemUrl = _url + '?action=quahan'
+                if 'noview' in m['path']:
+                    itemUrl = _url + '?action=noview'										
                 #+ '&subtitle=' + urlencode(m['subtitle'])
                 #itemUrl = _url + '?action=play&video=' + m['path'] + '&subtile=' + m['subtitle']
                 xbmcplugin.addDirectoryItem(_handle, itemUrl, item, isFolder)
+								xbmc.executebuiltin('Notification(Hello World,This is a simple example of notifications,5000,/script.hellow.world.png)')
             else:
                 isPlayable = False
                 mid = m['mid']
